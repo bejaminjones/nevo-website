@@ -3,1278 +3,332 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Nevo — Intelligent Note-Taking</title>
-    <meta name="description" content="Nevo automatically organizes your thoughts with on-device AI. 10 research-backed categories. Zero effort. Complete privacy.">
-
-    <!-- Fonts -->
+    <meta name="description" content="Nevo — intelligent note-taking with automatic categorisation. Just start writing.">
+    <title>Nevo — Just start writing.</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
     <style>
         :root {
-            --gradient-yellow: #F7D86C;
-            --gradient-coral: #FF8B8B;
-            --gradient-peach: #FFAB8F;
-            --gradient-mint: #8FFFB0;
-            --gradient-sage: #B8D4A8;
+            --bg: #FAF8F5;
+            --bg-surface: #F2EDE7;
+            --text: #1A1816;
+            --text-secondary: #6B635A;
+            --border: #E8E4DF;
+            --accent: #B0C4DE;
 
-            --bg-deep: #0A0A0A;
-            --bg-surface: #141414;
-            --bg-elevated: #1A1A1A;
-
-            --text-primary: #FFFFFF;
-            --text-secondary: rgba(255, 255, 255, 0.7);
-            --text-tertiary: rgba(255, 255, 255, 0.4);
-
-            --category-work: #A8C9E8;
-            --category-life: #E8B4B8;
-            --category-tasks: #E8C4A8;
-            --category-ideas: #E8DDB4;
-            --category-journal: #D4A8B8;
-            --category-health: #B8E8D4;
-            --category-finance: #B8C8A8;
-            --category-learning: #A8D4E8;
-            --category-creative: #C4B8E8;
-            --category-reference: #D4D0C8;
+            --cat-work: #B0C4DE;
+            --cat-tasks: #E5C4A5;
+            --cat-shopping: #C4DCC0;
+            --cat-ideas: #E8D8A8;
+            --cat-journal: #D4A5A5;
+            --cat-health: #E8B4B4;
+            --cat-finance: #C0D8B8;
+            --cat-learning: #C8DCE4;
+            --cat-writing: #D4A5B5;
+            --cat-creative: #B8C4D8;
+            --cat-reference: #BDBBB8;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
 
         body {
             font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-            background: var(--bg-deep);
-            color: var(--text-primary);
-            overflow-x: hidden;
+            background: var(--bg);
+            color: var(--text);
             line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
         }
 
-        /* ===== NOISE TEXTURE OVERLAY ===== */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
-            opacity: 0.03;
-            pointer-events: none;
-            z-index: 1000;
-        }
-
-        /* ===== TYPOGRAPHY ===== */
         h1, h2, h3 {
             font-family: 'Instrument Serif', Georgia, serif;
             font-weight: 400;
+            line-height: 1.15;
         }
 
-        /* ===== NAVIGATION ===== */
+        /* NAV */
         nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            padding: 1.5rem 3rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+            padding: 1.25rem 3rem;
+            display: flex; justify-content: space-between; align-items: center;
             transition: background 0.4s ease, backdrop-filter 0.4s ease;
         }
-
         nav.scrolled {
-            background: rgba(10, 10, 10, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            text-decoration: none;
-        }
-
-        .logo-mark {
-            width: 40px;
-            height: 40px;
-        }
-
-        .logo-text {
-            font-family: 'Instrument Serif', serif;
-            font-size: 1.5rem;
-            color: var(--text-primary);
-            letter-spacing: -0.02em;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2.5rem;
-            align-items: center;
-        }
-
-        .nav-links a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            font-weight: 500;
-            transition: color 0.3s ease;
-            letter-spacing: 0.02em;
-        }
-
-        .nav-links a:hover {
-            color: var(--text-primary);
-        }
-
-        .nav-cta {
-            background: linear-gradient(135deg, var(--gradient-yellow), var(--gradient-coral));
-            color: var(--bg-deep) !important;
-            padding: 0.75rem 1.5rem;
-            border-radius: 100px;
-            font-weight: 600 !important;
-            transition: transform 0.3s ease, box-shadow 0.3s ease !important;
-        }
-
-        .nav-cta:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 40px rgba(247, 216, 108, 0.3);
-        }
-
-        /* ===== HERO SECTION ===== */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 8rem 2rem 4rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Ambient gradient blobs */
-        .hero::before {
-            content: '';
-            position: absolute;
-            width: 800px;
-            height: 800px;
-            background: radial-gradient(circle, rgba(247, 216, 108, 0.15) 0%, transparent 70%);
-            top: -200px;
-            left: -200px;
-            animation: float 20s ease-in-out infinite;
-        }
-
-        .hero::after {
-            content: '';
-            position: absolute;
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(143, 255, 176, 0.1) 0%, transparent 70%);
-            bottom: -100px;
-            right: -100px;
-            animation: float 25s ease-in-out infinite reverse;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            25% { transform: translate(50px, -30px) scale(1.05); }
-            50% { transform: translate(20px, 40px) scale(0.95); }
-            75% { transform: translate(-30px, 20px) scale(1.02); }
-        }
-
-        .hero-content {
-            position: relative;
-            z-index: 1;
-            max-width: 900px;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: var(--bg-elevated);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 0.5rem 1rem;
-            border-radius: 100px;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-            animation: fadeInUp 0.8s ease-out;
-        }
-
-        .hero-badge::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            background: var(--gradient-mint);
-            border-radius: 50%;
-            animation: pulse 2s ease-in-out infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.5; transform: scale(1.2); }
-        }
-
-        .hero h1 {
-            font-size: clamp(3rem, 8vw, 6.5rem);
-            line-height: 1.05;
-            letter-spacing: -0.03em;
-            margin-bottom: 1.5rem;
-            animation: fadeInUp 0.8s ease-out 0.1s both;
-        }
-
-        .hero h1 span {
-            background: linear-gradient(135deg, var(--gradient-yellow), var(--gradient-coral), var(--gradient-mint));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .hero-subtitle {
-            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto 3rem;
-            animation: fadeInUp 0.8s ease-out 0.2s both;
-        }
-
-        .hero-cta-group {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-            animation: fadeInUp 0.8s ease-out 0.3s both;
-        }
-
-        .btn-primary {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.75rem;
-            background: linear-gradient(135deg, var(--gradient-yellow), var(--gradient-coral));
-            color: var(--bg-deep);
-            padding: 1rem 2rem;
-            border-radius: 100px;
-            font-weight: 600;
-            font-size: 1rem;
-            text-decoration: none;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 20px 60px rgba(247, 216, 108, 0.35);
-        }
-
-        .btn-primary svg {
-            width: 20px;
-            height: 20px;
-        }
-
-        .btn-secondary {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: transparent;
-            color: var(--text-primary);
-            padding: 1rem 2rem;
-            border-radius: 100px;
-            font-weight: 500;
-            font-size: 1rem;
-            text-decoration: none;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-        }
-
-        .btn-secondary:hover {
-            background: rgba(255, 255, 255, 0.05);
-            border-color: rgba(255, 255, 255, 0.3);
-        }
-
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        /* ===== HERO VISUAL ===== */
-        .hero-visual {
-            margin-top: 5rem;
-            position: relative;
-            width: 100%;
-            max-width: 1100px;
-            animation: fadeInUp 1s ease-out 0.5s both;
-        }
-
-        .phone-mockup {
-            position: relative;
-            margin: 0 auto;
-            width: 320px;
-            height: 680px;
-            background: linear-gradient(145deg, #1A1A1A, #0D0D0D);
-            border-radius: 50px;
-            padding: 12px;
-            box-shadow:
-                0 50px 100px rgba(0, 0, 0, 0.5),
-                0 0 0 1px rgba(255, 255, 255, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        }
-
-        .phone-screen {
-            width: 100%;
-            height: 100%;
-            background: var(--bg-surface);
-            border-radius: 40px;
-            overflow: hidden;
-            position: relative;
-        }
-
-        .phone-screen img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: top;
-            border-radius: 40px;
-        }
-
-        /* Floating category pills around phone */
-        .floating-categories {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            pointer-events: none;
-        }
-
-        .floating-pill {
-            position: absolute;
-            padding: 0.5rem 1rem;
-            border-radius: 100px;
-            font-size: 0.8rem;
-            font-weight: 500;
-            background: var(--bg-elevated);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            animation: floatPill 6s ease-in-out infinite;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
-        }
-
-        .floating-pill::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-
-        .floating-pill.work { left: 0; top: 20%; }
-        .floating-pill.work::before { background: var(--category-work); }
-
-        .floating-pill.ideas { right: 0; top: 10%; animation-delay: -1s; }
-        .floating-pill.ideas::before { background: var(--category-ideas); }
-
-        .floating-pill.health { left: 5%; bottom: 30%; animation-delay: -2s; }
-        .floating-pill.health::before { background: var(--category-health); }
-
-        .floating-pill.creative { right: 5%; bottom: 20%; animation-delay: -3s; }
-        .floating-pill.creative::before { background: var(--category-creative); }
-
-        .floating-pill.finance { left: 10%; top: 50%; animation-delay: -4s; }
-        .floating-pill.finance::before { background: var(--category-finance); }
-
-        @keyframes floatPill {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-15px) rotate(2deg); }
-        }
-
-        /* ===== FEATURES SECTION ===== */
-        .features {
-            padding: 8rem 2rem;
-            position: relative;
-        }
-
-        .section-header {
-            text-align: center;
-            max-width: 700px;
-            margin: 0 auto 5rem;
-        }
-
-        .section-label {
-            font-size: 0.85rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            color: var(--gradient-coral);
-            margin-bottom: 1rem;
-        }
-
-        .section-title {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            line-height: 1.1;
-            letter-spacing: -0.02em;
-            margin-bottom: 1.5rem;
-        }
-
-        .section-description {
-            font-size: 1.15rem;
-            color: var(--text-secondary);
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .feature-card {
-            background: linear-gradient(145deg, var(--bg-surface), var(--bg-elevated));
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 24px;
-            padding: 2.5rem;
-            transition: transform 0.4s ease, box-shadow 0.4s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 200px;
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.02) 0%, transparent 100%);
-            pointer-events: none;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
-        }
-
-        .feature-icon {
-            width: 64px;
-            height: 64px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-            font-size: 1.75rem;
-        }
-
-        .feature-card:nth-child(1) .feature-icon {
-            background: linear-gradient(135deg, rgba(247, 216, 108, 0.2), rgba(255, 139, 139, 0.2));
-        }
-
-        .feature-card:nth-child(2) .feature-icon {
-            background: linear-gradient(135deg, rgba(143, 255, 176, 0.2), rgba(184, 212, 168, 0.2));
-        }
-
-        .feature-card:nth-child(3) .feature-icon {
-            background: linear-gradient(135deg, rgba(168, 201, 232, 0.2), rgba(196, 184, 232, 0.2));
-        }
-
-        .feature-card:nth-child(4) .feature-icon {
-            background: linear-gradient(135deg, rgba(255, 139, 139, 0.2), rgba(212, 168, 184, 0.2));
-        }
-
-        .feature-title {
-            font-family: 'Instrument Serif', serif;
-            font-size: 1.5rem;
-            margin-bottom: 0.75rem;
-        }
-
-        .feature-description {
-            color: var(--text-secondary);
-            font-size: 1rem;
-            line-height: 1.7;
-        }
-
-        /* ===== CATEGORIES SECTION ===== */
-        .categories {
-            padding: 8rem 2rem;
-            background: linear-gradient(180deg, transparent 0%, rgba(20, 20, 20, 0.5) 50%, transparent 100%);
-        }
-
-        .categories-showcase {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4rem;
-            align-items: center;
-        }
-
-        .categories-visual {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .categories-phone {
-            width: 280px;
-            height: 580px;
-            background: linear-gradient(145deg, #1A1A1A, #0D0D0D);
-            border-radius: 44px;
-            padding: 10px;
-            box-shadow:
-                0 40px 80px rgba(0, 0, 0, 0.5),
-                0 0 0 1px rgba(255, 255, 255, 0.1),
-                inset 0 1px 0 rgba(255, 255, 255, 0.1);
-        }
-
-        .categories-phone .phone-screen {
-            width: 100%;
-            height: 100%;
-        }
-
-        .categories-phone .phone-screen img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            object-position: top;
-            border-radius: 36px;
-        }
-
-        .categories-content {
-            padding-left: 2rem;
-        }
-
-        .categories-content .section-label {
-            text-align: left;
-        }
-
-        .categories-content .section-title {
-            text-align: left;
-            font-size: clamp(2rem, 4vw, 3rem);
-        }
-
-        .categories-content .section-description {
-            text-align: left;
-            margin-bottom: 2rem;
-        }
-
-        .category-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.75rem;
-        }
-
-        .category-tag {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: var(--bg-elevated);
-            border-radius: 100px;
-            font-size: 0.85rem;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .category-tag-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-        }
-
-        /* ===== PRIVACY SECTION ===== */
-        .privacy {
-            padding: 8rem 2rem;
-            position: relative;
-        }
-
-        .privacy-card {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: linear-gradient(145deg, #0D0D0D, #1A1A1A);
-            border-radius: 32px;
-            padding: 4rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .privacy-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: conic-gradient(from 0deg, transparent, rgba(143, 255, 176, 0.05), transparent, rgba(247, 216, 108, 0.05), transparent);
-            animation: rotate 20s linear infinite;
-        }
-
-        @keyframes rotate {
-            to { transform: rotate(360deg); }
-        }
-
-        .privacy-content {
-            position: relative;
-            z-index: 1;
-        }
-
-        .privacy-icon {
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 2rem;
-            background: linear-gradient(135deg, var(--gradient-mint), var(--gradient-sage));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-        }
-
-        .privacy h2 {
-            font-size: clamp(2rem, 4vw, 3rem);
-            margin-bottom: 1rem;
-        }
-
-        .privacy p {
-            font-size: 1.15rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto 2rem;
-        }
-
-        .privacy-badges {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .privacy-badge {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-        }
-
-        .privacy-badge svg {
-            width: 20px;
-            height: 20px;
-            color: var(--gradient-mint);
-        }
-
-        /* ===== TESTIMONIALS ===== */
-        .testimonials {
-            padding: 8rem 2rem;
-        }
-
-        .testimonials-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .testimonial-card {
-            background: var(--bg-surface);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 20px;
-            padding: 2rem;
-        }
-
-        .testimonial-stars {
-            color: var(--gradient-yellow);
-            margin-bottom: 1rem;
-            font-size: 1.1rem;
-            letter-spacing: 2px;
-        }
-
-        .testimonial-text {
-            font-size: 1rem;
-            line-height: 1.7;
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-            font-style: italic;
-        }
-
-        .testimonial-author {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .testimonial-avatar {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--gradient-coral), var(--gradient-yellow));
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 600;
-            color: var(--bg-deep);
-        }
-
-        .testimonial-name {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .testimonial-role {
-            font-size: 0.85rem;
-            color: var(--text-tertiary);
-        }
-
-        /* ===== CTA SECTION ===== */
-        .cta {
-            padding: 8rem 2rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cta::before {
-            content: '';
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            background: radial-gradient(ellipse at center, rgba(247, 216, 108, 0.1) 0%, transparent 60%);
-        }
-
-        .cta-content {
-            position: relative;
-            z-index: 1;
-            max-width: 700px;
-            margin: 0 auto;
-        }
-
-        .cta h2 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            line-height: 1.1;
-            margin-bottom: 1.5rem;
-        }
-
-        .cta h2 span {
-            font-style: italic;
-        }
-
-        .cta p {
-            font-size: 1.2rem;
-            color: var(--text-secondary);
-            margin-bottom: 2.5rem;
-        }
-
-        /* ===== FOOTER ===== */
-        footer {
-            padding: 4rem 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 2rem;
-        }
-
-        .footer-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .footer-logo img {
-            width: 32px;
-            height: 32px;
-        }
-
-        .footer-logo span {
-            font-family: 'Instrument Serif', serif;
-            font-size: 1.25rem;
-        }
-
-        .footer-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .footer-links a {
-            color: var(--text-tertiary);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: color 0.3s ease;
-        }
-
-        .footer-links a:hover {
-            color: var(--text-primary);
-        }
-
-        .footer-copyright {
-            color: var(--text-tertiary);
-            font-size: 0.85rem;
-        }
-
-        /* ===== RESPONSIVE ===== */
+            background: rgba(250, 248, 245, 0.85);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+        }
+        .logo { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; color: var(--text); }
+        .logo img { width: 36px; height: 36px; }
+        .logo span { font-family: 'Instrument Serif', serif; font-size: 1.4rem; }
+        .nav-links { display: flex; gap: 2rem; align-items: center; }
+        .nav-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; font-weight: 500; transition: color 0.3s ease; }
+        .nav-links a:hover { color: var(--text); }
+        .nav-cta { background: var(--text); color: var(--bg) !important; padding: 0.6rem 1.25rem; border-radius: 100px; font-weight: 600 !important; transition: opacity 0.3s ease; }
+        .nav-cta:hover { opacity: 0.85; }
+
+        /* HERO */
+        .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 8rem 2rem 4rem; }
+        .hero-content { max-width: 700px; }
+        .hero h1 { font-size: clamp(3rem, 7vw, 5rem); letter-spacing: -0.03em; margin-bottom: 1.25rem; color: var(--text); }
+        .hero-subtitle { font-size: 1.15rem; color: var(--text-secondary); max-width: 520px; margin: 0 auto 2.5rem; line-height: 1.7; }
+        .btn-primary { display: inline-flex; align-items: center; gap: 0.6rem; background: var(--text); color: var(--bg); padding: 0.9rem 1.75rem; border-radius: 100px; font-weight: 600; font-size: 1rem; text-decoration: none; transition: opacity 0.3s ease; }
+        .btn-primary:hover { opacity: 0.85; }
+        .btn-primary svg { width: 18px; height: 18px; }
+
+        /* PHONE MOCKUP */
+        .hero-visual { margin-top: 4rem; width: 100%; max-width: 900px; }
+        .phone-mockup { position: relative; margin: 0 auto; width: 300px; height: 640px; background: var(--text); border-radius: 48px; padding: 10px; box-shadow: 0 40px 80px rgba(26, 24, 22, 0.15), 0 0 0 1px rgba(26, 24, 22, 0.08); }
+        .phone-screen { width: 100%; height: 100%; border-radius: 40px; overflow: hidden; }
+        .phone-screen img { width: 100%; height: 100%; object-fit: cover; object-position: top; border-radius: 40px; }
+
+        /* HOW IT WORKS */
+        .how-it-works { padding: 6rem 2rem; }
+        .section-header { text-align: center; max-width: 600px; margin: 0 auto 4rem; }
+        .section-label { font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.12em; color: var(--text-secondary); margin-bottom: 0.75rem; }
+        .section-title { font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -0.02em; }
+        .steps { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2.5rem; max-width: 960px; margin: 0 auto; }
+        .step-number { font-family: 'Instrument Serif', serif; font-size: 3rem; color: var(--accent); line-height: 1; margin-bottom: 0.75rem; }
+        .step h3 { font-family: 'DM Sans', sans-serif; font-size: 1.1rem; font-weight: 600; margin-bottom: 0.5rem; }
+        .step p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.7; }
+
+        /* CATEGORIES */
+        .categories { padding: 6rem 2rem; background: var(--bg-surface); }
+        .categories-inner { max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; }
+        .categories-phone { width: 280px; height: 580px; background: var(--text); border-radius: 44px; padding: 10px; margin: 0 auto; box-shadow: 0 40px 80px rgba(26, 24, 22, 0.12), 0 0 0 1px rgba(26, 24, 22, 0.06); }
+        .categories-phone .phone-screen { width: 100%; height: 100%; border-radius: 36px; overflow: hidden; }
+        .categories-phone .phone-screen img { width: 100%; height: 100%; object-fit: cover; object-position: top; border-radius: 36px; }
+        .categories-content .section-label { text-align: left; }
+        .categories-content .section-title { text-align: left; font-size: clamp(2rem, 4vw, 2.75rem); margin-bottom: 1rem; }
+        .categories-description { color: var(--text-secondary); font-size: 1.05rem; line-height: 1.7; margin-bottom: 2rem; text-align: left; }
+        .category-pills { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+        .category-pill { display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.85rem; background: var(--bg); border-radius: 100px; font-size: 0.85rem; font-weight: 500; border: 1px solid var(--border); }
+        .category-pill-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+        /* PRIVACY */
+        .privacy { padding: 6rem 2rem; }
+        .privacy-card { max-width: 800px; margin: 0 auto; background: var(--bg-surface); border-radius: 24px; padding: 4rem; text-align: center; border: 1px solid var(--border); }
+        .privacy-card h2 { font-size: clamp(2rem, 4vw, 2.75rem); margin-bottom: 1rem; }
+        .privacy-card > p { font-size: 1.1rem; color: var(--text-secondary); max-width: 500px; margin: 0 auto 2.5rem; line-height: 1.7; }
+        .privacy-badges { display: flex; justify-content: center; gap: 2rem; flex-wrap: wrap; }
+        .privacy-badge { display: flex; align-items: center; gap: 0.5rem; color: var(--text-secondary); font-size: 0.9rem; font-weight: 500; }
+        .privacy-badge svg { width: 20px; height: 20px; color: var(--accent); }
+
+        /* CTA */
+        .cta { padding: 6rem 2rem; text-align: center; }
+        .cta h2 { font-size: clamp(2.5rem, 5vw, 3.5rem); margin-bottom: 1.5rem; font-style: italic; }
+
+        /* FOOTER */
+        footer { padding: 3rem 2rem; border-top: 1px solid var(--border); }
+        .footer-content { max-width: 1100px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1.5rem; }
+        .footer-logo { display: flex; align-items: center; gap: 0.5rem; }
+        .footer-logo img { width: 28px; height: 28px; }
+        .footer-logo span { font-family: 'Instrument Serif', serif; font-size: 1.15rem; }
+        .footer-links { display: flex; gap: 1.5rem; }
+        .footer-links a { color: var(--text-secondary); text-decoration: none; font-size: 0.85rem; transition: color 0.3s ease; }
+        .footer-links a:hover { color: var(--text); }
+        .footer-copyright { color: var(--text-secondary); font-size: 0.8rem; }
+
+        /* RESPONSIVE */
         @media (max-width: 1024px) {
-            .categories-showcase {
-                grid-template-columns: 1fr;
-                gap: 3rem;
-            }
-
-            .categories-content {
-                padding-left: 0;
-                text-align: center;
-            }
-
-            .categories-content .section-label,
-            .categories-content .section-title,
-            .categories-content .section-description {
-                text-align: center;
-            }
-
-            .category-list {
-                justify-content: center;
-            }
-
-            .floating-pill {
-                display: none;
-            }
+            .categories-inner { grid-template-columns: 1fr; gap: 3rem; }
+            .categories-content .section-label, .categories-content .section-title, .categories-description { text-align: center; }
+            .category-pills { justify-content: center; }
         }
-
         @media (max-width: 768px) {
-            nav {
-                padding: 1rem 1.5rem;
-            }
-
-            .nav-links {
-                display: none;
-            }
-
-            .hero {
-                padding: 6rem 1.5rem 3rem;
-            }
-
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .categories-visual {
-                margin: 0 auto;
-            }
-
-            .categories-phone {
-                width: 240px;
-                height: 500px;
-            }
-
-            .privacy-card {
-                padding: 2.5rem 1.5rem;
-            }
-
-            .privacy-badges {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .footer-content {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .phone-mockup {
-                width: 280px;
-                height: 600px;
-            }
+            nav { padding: 1rem 1.5rem; }
+            .nav-links a:not(.nav-cta) { display: none; }
+            .hero { padding: 7rem 1.5rem 3rem; }
+            .steps { grid-template-columns: 1fr; gap: 2rem; text-align: center; }
+            .step-number { font-size: 2.5rem; }
+            .privacy-card { padding: 2.5rem 1.5rem; }
+            .privacy-badges { flex-direction: column; align-items: center; }
+            .phone-mockup { width: 260px; height: 554px; }
+            .categories-phone { width: 240px; height: 500px; }
+            .footer-content { flex-direction: column; text-align: center; }
         }
 
-        /* ===== SCROLL ANIMATIONS ===== */
-        .animate-on-scroll {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: opacity 0.8s ease, transform 0.8s ease;
-        }
-
-        .animate-on-scroll.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
+        /* SCROLL ANIMATIONS */
+        .animate-on-scroll { opacity: 0; transform: translateY(30px); transition: opacity 0.7s ease, transform 0.7s ease; }
+        .animate-on-scroll.visible { opacity: 1; transform: translateY(0); }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav id="navbar">
+
+    <!-- NAV -->
+    <nav id="main-nav">
         <a href="#" class="logo">
-            <img class="logo-mark" src="images/nevo-logo.png" alt="Nevo" />
-            <span class="logo-text">Nevo</span>
+            <img src="images/nevo-logo.png" alt="Nevo logo">
+            <span>Nevo</span>
         </a>
         <div class="nav-links">
-            <a href="#features">Features</a>
+            <a href="#how-it-works">How it works</a>
             <a href="#categories">Categories</a>
             <a href="#privacy">Privacy</a>
             <a href="#download" class="nav-cta">Download</a>
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- HERO -->
     <section class="hero">
         <div class="hero-content">
-            <div class="hero-badge">
-                Available on iOS 26
-            </div>
-            <h1>Your thoughts,<br><span>effortlessly organized</span></h1>
-            <p class="hero-subtitle">
-                Nevo automatically categorizes your notes with on-device AI.
-                Just write—we handle the organization.
-            </p>
-            <div class="hero-cta-group">
-                <a href="#download" class="btn-primary">
-                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-                    Download for iOS
-                </a>
-                <a href="#features" class="btn-secondary">
-                    See how it works
-                </a>
-            </div>
-        </div>
-
-        <div class="hero-visual">
-            <div class="floating-categories">
-                <div class="floating-pill work">Work</div>
-                <div class="floating-pill ideas">Ideas</div>
-                <div class="floating-pill health">Health</div>
-                <div class="floating-pill creative">Creative</div>
-                <div class="floating-pill finance">Finance</div>
-            </div>
-
-            <div class="phone-mockup">
-                <div class="phone-screen">
-                    <img src="images/screenshot-notes-grid.png" alt="Nevo notes grid showing categorized notes for Tasks, Shopping, Work, Journal, Ideas, Writing, and Reference" />
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Features Section -->
-    <section class="features" id="features">
-        <div class="section-header animate-on-scroll">
-            <div class="section-label">Features</div>
-            <h2 class="section-title">Intelligence that<br>respects your flow</h2>
-            <p class="section-description">
-                Nevo uses a sophisticated multi-tier analysis system to understand your notes
-                and categorize them instantly—without ever leaving your device.
-            </p>
-        </div>
-
-        <div class="features-grid">
-            <div class="feature-card animate-on-scroll">
-                <div class="feature-icon">🧠</div>
-                <h3 class="feature-title">On-Device AI</h3>
-                <p class="feature-description">
-                    Powered by Apple Intelligence and CoreML, Nevo analyzes your notes locally.
-                    Your thoughts never leave your device—categorization happens in milliseconds,
-                    not on distant servers.
-                </p>
-            </div>
-
-            <div class="feature-card animate-on-scroll">
-                <div class="feature-icon">⚡</div>
-                <h3 class="feature-title">Instant Categorization</h3>
-                <p class="feature-description">
-                    A three-tier system ensures accuracy: AI-powered analysis for deep understanding,
-                    ML classification for speed, and intelligent keyword matching as a reliable fallback.
-                </p>
-            </div>
-
-            <div class="feature-card animate-on-scroll">
-                <div class="feature-icon">📝</div>
-                <h3 class="feature-title">Rich Text Editing</h3>
-                <p class="feature-description">
-                    Format your thoughts with bold, italic, headers, and more. The floating toolbar
-                    appears exactly when you need it, staying out of your way when you don't.
-                </p>
-            </div>
-
-            <div class="feature-card animate-on-scroll">
-                <div class="feature-icon">🔄</div>
-                <h3 class="feature-title">Adaptive Learning</h3>
-                <p class="feature-description">
-                    When you recategorize a note, Nevo remembers. The system learns your preferences
-                    over time, becoming increasingly accurate to your personal organization style.
-                </p>
-            </div>
-        </div>
-    </section>
-
-    <!-- Categories Section -->
-    <section class="categories" id="categories">
-        <div class="categories-showcase">
-            <div class="categories-visual animate-on-scroll">
-                <div class="categories-phone">
-                    <div class="phone-screen">
-                        <img src="images/screenshot-categories.png" alt="Nevo category picker showing all 11 built-in categories: Work, Tasks, Shopping, Ideas, Journal, Health, Finance, Learning, Writing, Creative, and Reference" />
-                    </div>
-                </div>
-            </div>
-
-            <div class="categories-content animate-on-scroll">
-                <div class="section-label">11 Categories</div>
-                <h2 class="section-title">Research-backed<br>organization</h2>
-                <p class="section-description">
-                    Based on the PARA method and cognitive load research, Nevo uses exactly
-                    11 categories—enough for meaningful organization, few enough to remember.
-                    Create custom categories when you need them.
-                </p>
-                <div class="category-list">
-                    <div class="category-tag">
-                        <span class="category-tag-dot" style="background: var(--category-work)"></span>
-                        Work
-                    </div>
-                    <div class="category-tag">
-                        <span class="category-tag-dot" style="background: var(--category-tasks)"></span>
-                        Tasks
-                    </div>
-                    <div class="category-tag">
-                        <span class="category-tag-dot" style="background: #E8C4A8"></span>
-                        Shopping
-                    </div>
-                    <div class="category-tag">
-                        <span class="category-tag-dot" style="background: var(--category-ideas)"></span>
-                        Ideas
-                    </div>
-                    <div class="category-tag">
-                        <span class="category-tag-dot" style="background: var(--category-journal)"></span>
-                        Journal
-                    </div>
-                    <div class="category-tag">
-                        <span class="category-tag-dot" style="background: var(--category-health)"></span>
-                        Health
-                    </div>
-                    <div class="category-tag">
-                        <span class="category-tag-dot" style="background: var(--category-finance)"></span>
-                        Finance
-                    </div>
-                    <div class="category-tag">
-                        <span class="category-tag-dot" style="background: var(--category-learning)"></span>
-                        Learning
-                    </div>
-                    <div class="category-tag">
-                        <span class="category-tag-dot" style="background: #D4C4B8"></span>
-                        Writing
-                    </div>
-                    <div class="category-tag">
-                        <span class="category-tag-dot" style="background: var(--category-creative)"></span>
-                        Creative
-                    </div>
-                    <div class="category-tag">
-                        <span class="category-tag-dot" style="background: var(--category-reference)"></span>
-                        Reference
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Privacy Section -->
-    <section class="privacy" id="privacy">
-        <div class="privacy-card animate-on-scroll">
-            <div class="privacy-content">
-                <div class="privacy-icon">🔒</div>
-                <h2>Your thoughts stay yours</h2>
-                <p>
-                    Every word you write is processed entirely on your device using Apple's
-                    on-device AI. No servers. No cloud processing. No data collection.
-                    Your notes are synced with iCloud—encrypted end-to-end.
-                </p>
-                <div class="privacy-badges">
-                    <div class="privacy-badge">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                            <path d="M9 12l2 2 4-4"/>
-                        </svg>
-                        On-device processing
-                    </div>
-                    <div class="privacy-badge">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                            <path d="M7 11V7a5 5 0 0110 0v4"/>
-                        </svg>
-                        End-to-end encryption
-                    </div>
-                    <div class="privacy-badge">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <circle cx="12" cy="12" r="10"/>
-                            <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
-                        </svg>
-                        No data collection
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Testimonials -->
-    <section class="testimonials">
-        <div class="section-header animate-on-scroll">
-            <div class="section-label">Reviews</div>
-            <h2 class="section-title">Loved by note-takers</h2>
-        </div>
-
-        <div class="testimonials-grid">
-            <div class="testimonial-card animate-on-scroll">
-                <div class="testimonial-stars">★★★★★</div>
-                <p class="testimonial-text">
-                    "Finally, a notes app that actually understands what I'm writing.
-                    The automatic categorization is scarily accurate."
-                </p>
-                <div class="testimonial-author">
-                    <div class="testimonial-avatar">SM</div>
-                    <div>
-                        <div class="testimonial-name">Sarah M.</div>
-                        <div class="testimonial-role">Product Designer</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="testimonial-card animate-on-scroll">
-                <div class="testimonial-stars">★★★★★</div>
-                <p class="testimonial-text">
-                    "I've tried every note app out there. Nevo is the first one where I don't
-                    spend more time organizing than actually capturing ideas."
-                </p>
-                <div class="testimonial-author">
-                    <div class="testimonial-avatar">JK</div>
-                    <div>
-                        <div class="testimonial-name">James K.</div>
-                        <div class="testimonial-role">Startup Founder</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="testimonial-card animate-on-scroll">
-                <div class="testimonial-stars">★★★★★</div>
-                <p class="testimonial-text">
-                    "The privacy-first approach sold me. Knowing my journal entries never leave
-                    my phone makes me comfortable writing honestly."
-                </p>
-                <div class="testimonial-author">
-                    <div class="testimonial-avatar">AL</div>
-                    <div>
-                        <div class="testimonial-name">Amy L.</div>
-                        <div class="testimonial-role">Writer</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- CTA Section -->
-    <section class="cta" id="download">
-        <div class="cta-content animate-on-scroll">
-            <h2>Start capturing<br><span>effortlessly</span></h2>
-            <p>
-                Download Nevo and experience note-taking that works the way your mind does.
-            </p>
-            <a href="#" class="btn-primary">
-                <svg viewBox="0 0 24 24" fill="currentColor" width="20" height="20"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
-                Download for iOS
+            <h1>Just start writing.</h1>
+            <p class="hero-subtitle">Nevo captures your thoughts and organises them automatically — so you can focus on what you're thinking, not where to put it.</p>
+            <a href="#download" class="btn-primary">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                Download on the App Store
             </a>
         </div>
+        <div class="hero-visual">
+            <div class="phone-mockup">
+                <div class="phone-screen">
+                    <img src="images/screenshot-notes-grid.png" alt="Nevo notes grid">
+                </div>
+            </div>
+        </div>
     </section>
 
-    <!-- Footer -->
+    <!-- HOW IT WORKS -->
+    <section class="how-it-works" id="how-it-works">
+        <div class="section-header animate-on-scroll">
+            <p class="section-label">How it works</p>
+            <h2 class="section-title">Capture, categorise, done</h2>
+        </div>
+        <div class="steps">
+            <div class="step animate-on-scroll">
+                <div class="step-number">1</div>
+                <h3>Write anything</h3>
+                <p>Open Nevo and start typing. No folders to choose, no tags to assign — just put your thoughts down.</p>
+            </div>
+            <div class="step animate-on-scroll">
+                <div class="step-number">2</div>
+                <h3>Nevo organises it</h3>
+                <p>On-device AI reads your note and places it in the right category automatically. No data ever leaves your device.</p>
+            </div>
+            <div class="step animate-on-scroll">
+                <div class="step-number">3</div>
+                <h3>Find it instantly</h3>
+                <p>Browse by category or search across all your notes. Everything is exactly where you'd expect it to be.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- CATEGORIES -->
+    <section class="categories" id="categories">
+        <div class="categories-inner">
+            <div class="categories-phone animate-on-scroll">
+                <div class="phone-screen">
+                    <img src="images/screenshot-categories.png" alt="Nevo categories view">
+                </div>
+            </div>
+            <div class="categories-content animate-on-scroll">
+                <p class="section-label">11 Categories</p>
+                <h2 class="section-title">Based on how people actually think</h2>
+                <p class="categories-description">Nevo uses a deliberately small set of categories drawn from the PARA method — just enough structure to be useful, not so much that it becomes a system to maintain.</p>
+                <div class="category-pills">
+                    <span class="category-pill"><span class="category-pill-dot" style="background: var(--cat-work);"></span>Work</span>
+                    <span class="category-pill"><span class="category-pill-dot" style="background: var(--cat-tasks);"></span>Tasks</span>
+                    <span class="category-pill"><span class="category-pill-dot" style="background: var(--cat-shopping);"></span>Shopping</span>
+                    <span class="category-pill"><span class="category-pill-dot" style="background: var(--cat-ideas);"></span>Ideas</span>
+                    <span class="category-pill"><span class="category-pill-dot" style="background: var(--cat-journal);"></span>Journal</span>
+                    <span class="category-pill"><span class="category-pill-dot" style="background: var(--cat-health);"></span>Health</span>
+                    <span class="category-pill"><span class="category-pill-dot" style="background: var(--cat-finance);"></span>Finance</span>
+                    <span class="category-pill"><span class="category-pill-dot" style="background: var(--cat-learning);"></span>Learning</span>
+                    <span class="category-pill"><span class="category-pill-dot" style="background: var(--cat-writing);"></span>Writing</span>
+                    <span class="category-pill"><span class="category-pill-dot" style="background: var(--cat-creative);"></span>Creative</span>
+                    <span class="category-pill"><span class="category-pill-dot" style="background: var(--cat-reference);"></span>Reference</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PRIVACY -->
+    <section class="privacy" id="privacy">
+        <div class="privacy-card animate-on-scroll">
+            <h2>Everything stays on your device</h2>
+            <p>Your notes are yours. Nevo processes everything locally using on-device AI — your thoughts are never sent to a server, never used for training, never seen by anyone but you.</p>
+            <div class="privacy-badges">
+                <div class="privacy-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <polyline points="9 12 11 14 15 10"/>
+                    </svg>
+                    On-device AI only
+                </div>
+                <div class="privacy-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="16 16 12 12 8 16"/>
+                        <line x1="12" y1="12" x2="12" y2="21"/>
+                        <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3"/>
+                    </svg>
+                    No data uploaded
+                </div>
+                <div class="privacy-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
+                    </svg>
+                    No tracking
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta" id="download">
+        <h2 class="animate-on-scroll">Start writing.</h2>
+        <a href="#" class="btn-primary animate-on-scroll">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+            Download on the App Store
+        </a>
+    </section>
+
+    <!-- FOOTER -->
     <footer>
         <div class="footer-content">
             <div class="footer-logo">
-                <img src="images/nevo-logo.png" alt="Nevo" width="32" height="32" />
+                <img src="images/nevo-logo.png" alt="Nevo logo">
                 <span>Nevo</span>
             </div>
-
             <div class="footer-links">
-                <a href="#">Privacy Policy</a>
-                <a href="#">Terms of Service</a>
-                <a href="#">Support</a>
-                <a href="#">Press Kit</a>
+                <a href="#privacy">Privacy</a>
+                <a href="mailto:hello@nevo.app">Contact</a>
+                <a href="#">App Store</a>
             </div>
-
-            <div class="footer-copyright">
-                © 2025 Nevo. All rights reserved.
-            </div>
+            <p class="footer-copyright">&copy; 2026 Nevo. All rights reserved.</p>
         </div>
     </footer>
 
     <script>
-        // Navigation scroll effect
-        const navbar = document.getElementById('navbar');
+        // Nav scroll toggle
+        const nav = document.getElementById('main-nav');
         window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                navbar.classList.add('scrolled');
-            } else {
-                navbar.classList.remove('scrolled');
-            }
-        });
+            nav.classList.toggle('scrolled', window.scrollY > 20);
+        }, { passive: true });
 
-        // Scroll animations
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
+        // Scroll animations via IntersectionObserver
+        const animatedEls = document.querySelectorAll('.animate-on-scroll');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
                 }
             });
-        }, observerOptions);
-
-        document.querySelectorAll('.animate-on-scroll').forEach(el => {
-            observer.observe(el);
-        });
+        }, { threshold: 0.15 });
+        animatedEls.forEach(el => observer.observe(el));
 
         // Smooth scroll for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
+            anchor.addEventListener('click', (e) => {
+                const href = anchor.getAttribute('href');
+                if (href === '#') return;
+                const target = document.querySelector(href);
                 if (target) {
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+                    e.preventDefault();
+                    target.scrollIntoView({ behavior: 'smooth' });
                 }
-            });
-        });
-
-        // Category tiles hover effect
-        document.querySelectorAll('.category-tile').forEach(tile => {
-            tile.addEventListener('mouseenter', () => {
-                tile.style.zIndex = '10';
-            });
-            tile.addEventListener('mouseleave', () => {
-                tile.style.zIndex = '1';
             });
         });
     </script>

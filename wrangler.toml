@@ -1,0 +1,7 @@
+name = "nevo-website"
+compatibility_date = "2026-04-14"
+
+[[kv_namespaces]]
+binding = "BETA_SIGNUPS"
+id = "02ef7f7db8154030b4038fc4cf1074d4"
+preview_id = "318228447be946dca0f7beadd3c301d9"

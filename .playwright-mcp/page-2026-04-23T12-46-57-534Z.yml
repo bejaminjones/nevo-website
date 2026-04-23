@@ -1,0 +1,19 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - link "Nevo" [ref=e3] [cursor=pointer]:
+      - /url: /
+      - img "Nevo" [ref=e4]
+    - generic [ref=e5]:
+      - heading "Notes that organise themselves" [level=1] [ref=e6]:
+        - text: Notes that
+        - text: organise themselves
+      - paragraph [ref=e7]: Nevo captures your thoughts and sorts them automatically — so you can focus on what you're thinking, not where to put it.
+      - generic [ref=e8]:
+        - textbox "Email address" [ref=e9]:
+          - /placeholder: your@email.com
+        - button "Join the beta" [ref=e10] [cursor=pointer]
+    - generic [ref=e11]:
+      - img "Nevo on macOS" [ref=e12]
+      - img "Nevo on iPhone"
+  - contentinfo [ref=e13]:
+    - paragraph [ref=e14]: © 2026 Nevo. All rights reserved.

@@ -14,9 +14,6 @@
             --text: #ffffff;
             --text-muted: rgba(255, 255, 255, 0.5);
             --text-footer: #6b635a;
-            --input-bg: #ffffff;
-            --input-border: #e8e4df;
-            --input-text: #1a1816;
             --button-bg: #1a1816;
             --button-border: rgba(255, 255, 255, 0.48);
             --button-text: #faf8f5;
@@ -105,43 +102,12 @@
             font-variation-settings: 'opsz' 9;
         }
 
-        .signup-form {
-            display: flex;
-            gap: 8px;
-            width: 100%;
-            max-width: 470px;
+        .cta-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             height: 49.188px;
-        }
-
-        .signup-form input {
-            flex: 1;
-            min-width: 0;
-            height: 49.188px;
-            padding: 0 28px;
-            background: var(--input-bg);
-            border: 1px solid var(--input-border);
-            border-radius: 100px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 15.2px;
-            color: var(--input-text);
-            outline: none;
-            font-variation-settings: 'opsz' 9;
-            transition: border-color 0.2s ease;
-        }
-
-        .signup-form input::placeholder {
-            color: var(--input-text);
-            opacity: 0.7;
-        }
-
-        .signup-form input:focus {
-            border-color: var(--input-text);
-        }
-
-        .signup-form button {
-            flex-shrink: 0;
-            width: 144.188px;
-            height: 49.188px;
+            padding: 0 32px;
             background: var(--button-bg);
             color: var(--button-text);
             border: 1px solid var(--button-border);
@@ -149,75 +115,14 @@
             font-family: 'DM Sans', sans-serif;
             font-size: 15.2px;
             font-weight: 600;
-            cursor: pointer;
+            text-decoration: none;
             font-variation-settings: 'opsz' 14;
             transition: opacity 0.2s ease;
             white-space: nowrap;
         }
 
-        .signup-form button:hover {
+        .cta-button:hover {
             opacity: 0.85;
-        }
-
-        .signup-form button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .signup-success {
-            width: 100%;
-            max-width: 470px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 16px;
-            text-align: center;
-            animation: signup-success-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
-        }
-
-        .signup-success__icon {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: linear-gradient(
-                -30.5deg,
-                #AAFFB9 25%,
-                #FF7373 42%,
-                #FFE373 65%
-            );
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-
-        .signup-success__icon svg {
-            width: 22px;
-            height: 22px;
-            display: block;
-        }
-
-        .signup-success__title {
-            font-family: 'Fraunces', 'Instrument Serif', Georgia, serif;
-            font-weight: 400;
-            font-size: 40px;
-            line-height: 1;
-            letter-spacing: -1px;
-            color: var(--text);
-            font-variation-settings: 'SOFT' 0, 'WONK' 1;
-        }
-
-        .signup-success__body {
-            color: var(--text-muted);
-            font-family: 'DM Sans', sans-serif;
-            font-size: 15.2px;
-            font-weight: 500;
-            font-variation-settings: 'opsz' 9;
-        }
-
-        @keyframes signup-success-in {
-            from { opacity: 0; transform: scale(0.96); }
-            to { opacity: 1; transform: scale(1); }
         }
 
         /* Frame spans the full mac+phone bbox (1243×678) so the phone overhang never clips on narrow viewports. */
@@ -296,51 +201,10 @@
                 line-height: 1.6;
             }
 
-            .signup-form {
+            .cta-button {
                 height: 44px;
-                gap: 6px;
-            }
-
-            .signup-form input {
-                height: 44px;
-                padding: 0 20px;
+                padding: 0 26px;
                 font-size: 14px;
-            }
-
-            .signup-form button {
-                height: 44px;
-                width: auto;
-                padding: 0 18px;
-                font-size: 14px;
-                flex-shrink: 0;
-            }
-
-            .signup-success__icon {
-                width: 36px;
-                height: 36px;
-            }
-
-            .signup-success__icon svg {
-                width: 18px;
-                height: 18px;
-            }
-
-            .signup-success__title {
-                font-size: 28px;
-            }
-
-            .signup-success__body {
-                font-size: 14px;
-            }
-        }
-
-        @media (max-width: 360px) {
-            .signup-form input {
-                padding: 0 16px;
-            }
-
-            .signup-form button {
-                padding: 0 14px;
             }
         }
     </style>
@@ -359,10 +223,7 @@
 
             <p class="subtitle">Nevo captures your thoughts and sorts them automatically &mdash; so you can focus on what you're thinking, not where to put it.</p>
 
-            <form class="signup-form" id="hero-signup" novalidate>
-                <input type="email" placeholder="your@email.com" aria-label="Email address" required>
-                <button type="submit">Join the beta</button>
-            </form>
+            <a class="cta-button" href="https://testflight.apple.com/join/6EPzCbMQ">Join the beta on TestFlight</a>
         </div>
 
         <div class="mockup">
@@ -375,58 +236,5 @@
         <p>&copy; 2026 Nevo. All rights reserved.</p>
     </footer>
 
-    <script>
-        document.querySelectorAll('.signup-form').forEach(form => {
-            form.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                const input = form.querySelector('input');
-                const button = form.querySelector('button');
-                const email = input.value.trim();
-
-                if (!email || !input.checkValidity()) {
-                    input.reportValidity();
-                    return;
-                }
-
-                button.disabled = true;
-                button.textContent = 'Sending...';
-
-                try {
-                    const res = await fetch('/api/signup', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email })
-                    });
-                    const data = await res.json();
-
-                    if (res.ok) {
-                        const success = document.createElement('div');
-                        success.className = 'signup-success';
-                        success.setAttribute('role', 'status');
-                        success.setAttribute('aria-live', 'polite');
-                        success.innerHTML = `
-                            <div class="signup-success__icon" aria-hidden="true">
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M5 12.5l4.5 4.5L19 7.5" stroke="#1b1b1b" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <h2 class="signup-success__title">You&rsquo;re in.</h2>
-                            <p class="signup-success__body">Thanks for signing up &mdash; we&rsquo;ll be in touch soon.</p>
-                        `;
-                        form.replaceWith(success);
-                    } else {
-                        button.textContent = 'Join the beta';
-                        button.disabled = false;
-                        input.setCustomValidity(data.error || 'Something went wrong');
-                        input.reportValidity();
-                        input.setCustomValidity('');
-                    }
-                } catch {
-                    button.textContent = 'Join the beta';
-                    button.disabled = false;
-                }
-            });
-        });
-    </script>
 </body>
 </html>
